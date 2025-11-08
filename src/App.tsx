@@ -1,14 +1,25 @@
 import NavBar from "./components/NavBar";
+import Home from "./components/Home";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import logo from "./assets/logo.png";
+import { Route, BrowserRouter, Routes } from "react-router-dom";
 
 const App = () => {
-  let items = ["Home", "Product", "Services"];
+  let items = [
+    "Home",
+    "Twin Dashboard",
+    "Create Twin",
+    "My Insights",
+    "AI Reflections",
+  ];
   return (
-    <div>
-      <NavBar brandName={"MirrorMind"} imageSrcPath={logo} navItems={items} />
-    </div>
+    <BrowserRouter>
+      <NavBar brandName="MirrorMind" imageSrcPath={logo} navItems={items} />
+      <Routes>
+        <Route path="/" element={<Home />} />
+      </Routes>
+    </BrowserRouter>
   );
 };
 

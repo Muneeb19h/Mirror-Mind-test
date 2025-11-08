@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import "../App.css";
 
 interface NavBarProps {
@@ -8,70 +9,55 @@ interface NavBarProps {
 }
 
 const NavBar = ({ brandName, imageSrcPath, navItems }: NavBarProps) => {
-  const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
+
   return (
-    <nav className="navbar navbar-expand-md navbar-light bg-light shadow">
-      <div className="container-fluid">
-        <a className="navbar-brand" href="#">
-          <img
-            src={imageSrcPath}
-            width="80"
-            height="80"
-            className="d-inline-block align-center"
-            alt=""
-          />
-          <span className="fw-bolder fs-4">{brandName}</span>
-        </a>
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span className="navbar-toggler-icon"></span>
-        </button>
+    <nav className="navbar-modern">
+      <div className="navbar-container">
+        {/* Logo and Brand */}
+        <Link to="/" className="navbar-brand-modern">
+          <img src={imageSrcPath} alt="logo" className="brand-logo" />
+          <span>{brandName}</span>
+        </Link>
+
+        {/* Hamburger for mobile */}
         <div
-          className="collapse navbar-collapse align-items-center  flex-column flex-md-row"
-          id="navbarSupportedContent"
+          className={`menu-toggle ${isMenuOpen ? "open" : ""}`}
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
         >
-          <ul className="navbar-nav me-auto mb-2 mb-md-1">
-            {navItems.map((items, index) => (
-              <li
-                key={items}
-                className="nav-item"
-                onClick={() => setSelectedIndex(index)}
-              >
-                <a
-                  className={
-                    selectedIndex == index
-                      ? "nav-link active fw-bold"
-                      : "nav-link"
-                  }
-                  href="#"
-                >
-                  {items}
-                </a>
-              </li>
-            ))}
-          </ul>
-          <form className="form-inline d-flex me-3 my-2 my-lg-0">
-            <input
-              className="form-control mr-sm-2 me-2"
-              type="search"
-              placeholder="Search"
-              aria-label="Search"
-            />
-            <button
-              className="btn btn-outline-success my-2 my-sm-0"
-              type="submit"
-            >
-              Search
-            </button>
-          </form>
+          <span></span>
+          <span></span>
+          <span></span>
         </div>
+
+        {/* Nav Links */}
+        <ul className={`nav-links ${isMenuOpen ? "active" : ""}`}>
+          {navItems.map((item) => {
+            const path =
+              item.toLowerCase() === "home"
+                ? "/"
+                : "/" + item.toLowerCase().replace(" ", "-");
+            return (
+              <li key={item}>
+                <Link
+                  to={path}
+                  className={`nav-link-modern ${
+                    location.pathname === path ? "active" : ""
+                  }`}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {item}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+
+        {/* Login Button */}
+        <Link to="/login" className="login-btn">
+          Login / Signup
+        </Link>
       </div>
     </nav>
   );
