@@ -1,0 +1,325 @@
+.auth-wrapper {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #0e0e2a 0%, #050515 100%);
+    overflow: hidden;
+    font-family: "Poppins", sans-serif;
+    position: relative;
+}
+
+/*Small home icon in the top-left corner */
+.home-icon {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    color: #fff;
+    cursor: pointer;
+    z-index: 10;
+    transition: transform 0.2s ease;
+}
+
+.home-icon:hover {
+    transform: scale(1.1);
+}
+
+.auth-container {
+    position: relative;
+    width: 850px;
+    height: 520px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(25px);
+    border-radius: 25px;
+    box-shadow: 0 0 40px rgba(80, 80, 255, 0.25);
+    overflow: hidden;
+    display: flex;
+    transition: all 0.8s ease;
+}
+
+/* --- Form Base --- */
+.form-box {
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition: all 0.8s ease;
+    color: #f0eaff;
+    top: 0;
+    z-index: 2;
+}
+
+.form-box h2 {
+    font-size: 1.8rem;
+    background: linear-gradient(90deg, #a78bfa, #c084fc);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.4rem;
+}
+
+.subtitle {
+    color: #cfc9f2;
+    margin-bottom: 1.5rem;
+}
+
+.input-group {
+    text-align: left;
+    margin-bottom: 1.2rem;
+}
+
+.input-group label {
+    font-size: 0.9rem;
+    color: #bdb3f0;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 0.6rem 1rem;
+    margin-top: 0.4rem;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    transition: 0.3s;
+}
+
+.input-group input:focus {
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 10px rgba(150, 120, 255, 0.4);
+}
+
+.auth-btn {
+    width: 100%;
+    padding: 0.8rem;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #8f7bff, #d09eff);
+    color: #fff;
+    font-weight: 600;
+    transition: 0.3s;
+    box-shadow: 0 0 20px rgba(150, 100, 255, 0.3);
+}
+
+.auth-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 30px rgba(180, 130, 255, 0.5);
+}
+
+.toggle-text {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: #e3dfff;
+}
+
+.toggle-text span {
+    color: #fff;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.toggle-text span:hover {
+    text-decoration: underline;
+}
+
+/* --- Panel --- */
+.auth-panel {
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    right: 0;
+    top: 0;
+    background: linear-gradient(135deg, #8f7bff, #d09eff);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.8s ease;
+    z-index: 1;
+}
+
+.panel-content {
+    width: 80%;
+    text-align: center;
+}
+
+.panel-content h3 {
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+.panel-content p {
+    margin: 1rem 0 2rem 0;
+    color: #f6f0ff;
+}
+
+.panel-btn {
+    padding: 0.7rem 2rem;
+    border-radius: 10px;
+    background: #fff;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    color: #8f7bff;
+    transition: 0.3s;
+}
+
+.panel-btn:hover {
+    transform: scale(1.05);
+    background: #f5f0ff;
+}
+
+/* --- Animation Logic --- */
+.form-box.login {
+    left: 0;
+}
+
+.form-box.signup {
+    left: 100%;
+    opacity: 0;
+}
+
+.signup-mode .form-box.login {
+    transform: translateX(-100%);
+    opacity: 0;
+}
+
+.signup-mode .form-box.signup {
+    transform: translateX(-100%);
+    opacity: 1;
+}
+
+.signup-mode .auth-panel {
+    transform: translateX(-100%);
+    background: linear-gradient(135deg, #a78bfa, #c084fc);
+}
+
+/* --- Responsive Simplified Mobile Design (Refined) --- */
+@media (max-width: 900px) {
+    .auth-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 2rem 1rem;
+    }
+
+    .auth-container {
+        position: relative;
+        width: 100%;
+        max-width: 420px;
+        /* Keeps the card nicely narrow */
+        height: auto;
+        min-height: auto;
+        border-radius: 20px;
+        padding: 2rem 1.5rem;
+        background: rgba(255, 255, 255, 0.06);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+        backdrop-filter: blur(15px);
+        overflow: visible;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .form-box {
+        position: relative;
+        width: 100%;
+        left: 0 !important;
+        opacity: 1 !important;
+        transform: none !important;
+        padding: 0;
+        transition: none;
+    }
+
+    /* Hide panel on mobile */
+    .hide-on-mobile {
+        display: none !important;
+    }
+
+    /* Only show one form at a time */
+    .form-box.signup {
+        display: none;
+    }
+
+    .signup-mode .form-box.login {
+        display: none;
+    }
+
+    .signup-mode .form-box.signup {
+        display: flex;
+    }
+
+    /* Input tweaks for smaller screens */
+    .input-group input {
+        font-size: 0.95rem;
+        padding: 0.7rem 0.9rem;
+        border-radius: 8px;
+    }
+
+    /* Button and spacing */
+    .auth-btn {
+        font-size: 1rem;
+        padding: 0.9rem;
+        border-radius: 10px;
+        width: 100%;
+    }
+
+    .toggle-text {
+        margin-top: 1.5rem;
+        font-size: 0.95rem;
+        text-align: center;
+    }
+
+    /* Typography scale down */
+    .form-box h2 {
+        font-size: 1.5rem;
+        text-align: center;
+    }
+
+    .subtitle {
+        text-align: center;
+        font-size: 0.95rem;
+        color: #d8d4ff;
+    }
+
+    /* Home icon positioning */
+    .home-icon {
+        top: 20px;
+        left: 20px;
+    }
+}
+
+/* --- Even smaller phones --- */
+@media (max-width: 480px) {
+    .auth-container {
+        max-width: 360px;
+        padding: 1.5rem 1rem;
+    }
+
+    .form-box h2 {
+        font-size: 1.3rem;
+    }
+
+    .subtitle {
+        font-size: 0.85rem;
+    }
+
+    .input-group input {
+        font-size: 0.9rem;
+        padding: 0.65rem 0.8rem;
+    }
+
+    .auth-btn {
+        padding: 0.8rem;
+        font-size: 0.95rem;
+    }
+
+    .toggle-text {
+        font-size: 0.9rem;
+    }
+}

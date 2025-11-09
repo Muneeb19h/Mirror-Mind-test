@@ -1,37 +1,117 @@
+/* ===== Global App Styles (MirrorMind Theme) ===== */
+
+:root {
+  --primary-color: #7a5cff;
+  --accent-color: #c09eff;
+  --bg-color: #0b0b1f;
+  --text-color: #d4d4ff;
+  --soft-glow: 0 0 20px rgba(122, 92, 255, 0.4);
+}
+
+/* Reset & Smooth Base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+}
+
 body {
-    margin: 0;
-    font-family: 'Poppins', sans-serif;
-    background: radial-gradient(circle at top left, #0d0c1d, #1b1a2f, #090909);
-    color: #e6e6f0;
-    min-height: 100vh;
-    overflow-x: hidden;
+  font-family: "Poppins", "Inter", sans-serif;
+  background: radial-gradient(circle at top, #0e0e2a 0%, #050515 100%);
+  color: var(--text-color);
+  overflow-x: hidden;
+  min-height: 100vh;
+  position: relative;
+  transition: background 0.5s ease;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    color: #fff;
+/* Global Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(30, 20, 60, 0.4);
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #7a5cff, #c09eff);
+  border-radius: 6px;
 }
 
-p {
-    color: #b8b8cc;
+/* ===== General Layout Helpers ===== */
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.btn-glow {
-    background: linear-gradient(90deg, #7f5af0, #2cb67d);
-    border: none;
-    color: #fff;
-    padding: 12px 28px;
-    border-radius: 10px;
-    font-weight: 600;
-    transition: 0.3s ease;
-    box-shadow: 0 0 10px rgba(127, 90, 240, 0.3);
+section {
+  padding: 80px 0;
+  position: relative;
 }
 
-.btn-glow:hover {
-    box-shadow: 0 0 25px rgba(127, 90, 240, 0.7);
-    transform: translateY(-2px);
+/* ===== Headings ===== */
+h1, h2, h3 {
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(150, 100, 255, 0.3);
+  letter-spacing: 0.5px;
+}
+
+h1 {
+  font-size: 2.5rem;
+  background: linear-gradient(90deg, #8f7bff, #d09eff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ===== Buttons ===== */
+.btn-modern {
+  background: linear-gradient(90deg, #7a5cff, #c09eff);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 0.7rem 1.6rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  box-shadow: 0 0 15px rgba(122, 92, 255, 0.4);
+  transition: all 0.3s ease;
+}
+
+.btn-modern:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 25px rgba(150, 100, 255, 0.6);
+}
+
+/* ===== Futuristic Glow Animations ===== */
+.glow {
+  animation: glowPulse 4s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 8px rgba(120, 70, 255, 0.4));
+  }
+  50% {
+    filter: drop-shadow(0 0 16px rgba(120, 70, 255, 0.8));
+  }
+}
+
+/* ===== Section Background Accents ===== */
+.section-bg {
+  background: rgba(20, 15, 60, 0.35);
+  border: 1px solid rgba(120, 70, 255, 0.2);
+  border-radius: 20px;
+  box-shadow: 0 0 30px rgba(120, 70, 255, 0.1);
+  backdrop-filter: blur(25px);
+  padding: 40px;
+}
+
+/* ===== Footer (Optional) ===== */
+footer {
+  text-align: center;
+  padding: 20px 0;
+  font-size: 0.9rem;
+  color: #bcbcff;
+  border-top: 1px solid rgba(100, 80, 255, 0.2);
+  margin-top: 60px;
 }

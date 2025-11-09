@@ -58,7 +58,7 @@ const NavBar = ({ brandName, imageSrcPath, navItems }: NavBarProps) => {
         </ul>
 
         {/* Login Button */}
-        <Link to="/login" className="login-btn">
+        <Link to="/auth" className="login-btn">
           Login / Signup
         </Link>
       </div>
