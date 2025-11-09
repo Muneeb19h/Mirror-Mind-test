@@ -1,5 +1,5 @@
-import NavBar from "./components/NavBar";
-import Home from "./components/Home";
+import NavBar from "./components/NavBar/NavBar";
+import Home from "./components/Home/Home";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import logo from "./assets/logo.png";
