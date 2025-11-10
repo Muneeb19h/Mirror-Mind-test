@@ -1,0 +1,136 @@
+.twin-dashboard {
+    min-height: 100vh;
+    background: radial-gradient(ellipse at center, #090618 60%, #050312 100%);
+    padding: 8rem 3rem 4rem 3rem;
+    /* Increase top padding to accommodate navbar */
+    color: #e4e4ff;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    overflow-x: hidden;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+    width: 100%;
+    max-width: 1300px;
+}
+
+/* Reusable glass widget style */
+.widget {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(150, 100, 255, 0.1);
+    border-radius: 20px;
+    padding: 1.8rem;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 0 20px rgba(120, 70, 255, 0.15);
+    transition: all 0.3s ease;
+}
+
+.widget:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 25px rgba(140, 90, 255, 0.25);
+}
+
+/* Subtle entrance animation */
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.widget {
+    animation: fadeUp 0.8s ease forwards;
+}
+
+.widget-title {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: #bfaaff;
+}
+
+/* TwinSummary bars */
+.summary-stats .stat {
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.bar {
+    flex: 1;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.fill {
+    height: 100%;
+    background: linear-gradient(90deg, #70ffb7, #45d3a8);
+    transition: width 0.3s ease;
+}
+
+.fill.purple {
+    background: linear-gradient(90deg, #a488ff, #7a5eff);
+}
+
+/* Reflections */
+.reflection-list {
+    list-style: none;
+    padding: 0;
+    line-height: 1.8;
+}
+
+.reflection-list li {
+    background: rgba(255, 255, 255, 0.04);
+    padding: 0.7rem 1rem;
+    border-radius: 10px;
+    margin-bottom: 0.6rem;
+    transition: background 0.3s ease;
+}
+
+.reflection-list li:hover {
+    background: rgba(150, 100, 255, 0.1);
+}
+
+/* Cognitive Insights */
+.insight-items .insight {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 0.8rem;
+}
+
+/* Quick Actions */
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(90deg, #7a5eff, #9f7bff);
+    color: #fff;
+    border-radius: 10px;
+    padding: 0.8rem 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(150, 100, 255, 0.3);
+}

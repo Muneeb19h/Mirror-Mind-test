@@ -2,6 +2,7 @@ import NavBar from "./components/NavBar/NavBar";
 import Home from "./components/Home/Home";
 import Auth from "./components/Auth/Auth";
 import Footer from "./components/Footer/Footer";
+import TwinDashboard from "./components/TwinDashboard/TwinDashboard";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import logo from "./assets/logo.png";
@@ -27,6 +28,7 @@ const AppWrapper = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/auth" element={<Auth />} />
+        <Route path="/twin-dashboard" element={<TwinDashboard />} />
         {/* You can add more routes later here */}
       </Routes>
 

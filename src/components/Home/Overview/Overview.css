@@ -1,0 +1,179 @@
+/* === OVERVIEW SECTION (Cinematic Animation Theme) === */
+.overview-section {
+    position: relative;
+    text-align: center;
+    padding: 100px 20px;
+    color: #f1eaff;
+    background: radial-gradient(ellipse at center, #090618 60%, #050312 100%);
+    overflow: hidden;
+}
+
+/* Soft ambient light at center */
+.overview-section::before {
+    content: "";
+    position: absolute;
+    top: -20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    height: 300px;
+    background: radial-gradient(circle,
+            rgba(150, 100, 255, 0.08),
+            transparent 70%);
+    filter: blur(100px);
+    z-index: 0;
+}
+
+/* Title + Subtitle */
+.overview-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #d5cfff;
+    margin-bottom: 1.2rem;
+    letter-spacing: 1px;
+    animation: fadeSlideDown 1.2s ease forwards;
+    opacity: 0;
+}
+
+.overview-subtitle {
+    color: #a79fe3;
+    max-width: 700px;
+    margin: 0 auto 3rem;
+    font-size: 1.05rem;
+    line-height: 1.6;
+    animation: fadeIn 1.8s ease forwards;
+    opacity: 0;
+}
+
+/* Card Grid */
+.overview-grid {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+    position: relative;
+    z-index: 2;
+}
+
+/* Subtle minimal cards */
+.overview-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 14px;
+    padding: 2rem;
+    width: 280px;
+    transition: all 0.4s ease;
+    overflow: hidden;
+    position: relative;
+    opacity: 0;
+    transform: translateY(40px);
+    animation: fadeUp 1.2s ease forwards;
+}
+
+/* Stagger animation delays */
+.overview-card:nth-child(1) {
+    animation-delay: 0.3s;
+}
+
+.overview-card:nth-child(2) {
+    animation-delay: 0.5s;
+}
+
+.overview-card:nth-child(3) {
+    animation-delay: 0.7s;
+}
+
+/* Soft pulsing glow behind card */
+.overview-card::before {
+    content: "";
+    position: absolute;
+    top: -40%;
+    left: -40%;
+    width: 180%;
+    height: 180%;
+    background: radial-gradient(circle,
+            rgba(127, 90, 240, 0.12),
+            transparent 70%);
+    filter: blur(100px);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    z-index: 0;
+}
+
+.overview-card:hover::before {
+    opacity: 1;
+}
+
+.overview-card:hover {
+    transform: translateY(-8px);
+    border-color: rgba(160, 120, 255, 0.2);
+    box-shadow: 0 0 20px rgba(130, 90, 255, 0.15);
+}
+
+.overview-card h3 {
+    color: #e0d8ff;
+    font-size: 1.2rem;
+    margin-bottom: 0.7rem;
+    font-weight: 600;
+    position: relative;
+    z-index: 2;
+}
+
+.overview-card p {
+    color: #b4acd8;
+    line-height: 1.6;
+    font-size: 0.95rem;
+    position: relative;
+    z-index: 2;
+}
+
+/* === ANIMATIONS === */
+@keyframes fadeUp {
+    from {
+        transform: translateY(40px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeSlideDown {
+    from {
+        transform: translateY(-30px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .overview-grid {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .overview-card {
+        width: 90%;
+    }
+
+    .overview-title {
+        font-size: 2rem;
+    }
+}
