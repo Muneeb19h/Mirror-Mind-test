@@ -1,6 +1,10 @@
 import { motion } from "framer-motion";
 
-const Reflections = ({ insights }: any) => {
+type ReflectionsProps = {
+  insights: string[];
+};
+
+const Reflections: React.FC<ReflectionsProps> = ({ insights }) => {
   return (
     <motion.div
       className="widget reflections"
