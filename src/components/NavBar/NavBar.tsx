@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import ThemeToggle from "../Theme/Themetoggle";
 import "./NavBar.css";
 
 interface NavBarProps {
