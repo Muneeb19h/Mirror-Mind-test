@@ -8,7 +8,7 @@ import QuickActions from "./widgets/QuickActions";
 
 const TwinDashboard: React.FC = () => {
   const [twinData, setTwinData] = useState({
-    name: "Muneeb's Digital Twin",
+    name: "Jawad's Digital Twin",
     emotion: "Calm",
     energyLevel: 74,
     reflectionDepth: 82,

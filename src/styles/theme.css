@@ -1,0 +1,25 @@
+/* src/styles/theme.css */
+
+/* 🌑 Default Dark Theme */
+:root {
+    --bg-color: radial-gradient(ellipse at center, #090618 60%, #050312 100%);
+    --card-color: #1a1530;
+    --text-color: #e0dfff;
+    --accent-color: #7d5fff;
+    --border-color: #2a2250;
+}
+
+/* 🌕 Light Theme (activated by data-theme="light") */
+[data-theme="light"] {
+    --bg-color: #CBF3BB;
+    /* or #ABE7B2 */
+    --card-color: #eaf8e4;
+    --text-color: #1a1a1a;
+    --accent-color: #5b9461;
+    --border-color: #a7dca1;
+}
+
+/* 🔄 Smooth Theme Transition */
+* {
+    transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+}
