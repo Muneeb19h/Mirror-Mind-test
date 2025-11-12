@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Zap, Sparkles, Activity } from "lucide-react";
 
-const CognitiveInsights = ({ insights }: any) => {
+const CognitiveInsights = () => {
   return (
     <motion.div
       className="widget cognitive-insights"
