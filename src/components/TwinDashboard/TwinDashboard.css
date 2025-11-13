@@ -134,3 +134,73 @@
     transform: translateY(-2px);
     box-shadow: 0 0 15px rgba(150, 100, 255, 0.3);
 }
+/* --- Ultra Small Devices (≤320px) --- */
+@media (max-width: 375px) {
+    .twin-dashboard {
+        padding: 6rem 1rem 3rem 1rem;
+        justify-content: center;
+        align-items: flex-start;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        width: 100%;
+    }
+
+    .widget {
+        padding: 1.2rem;
+        border-radius: 14px;
+    }
+
+    .widget-title {
+        font-size: 1rem;
+        text-align: center;
+    }
+
+    .summary-stats .stat {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .action-btn {
+        padding: 0.7rem 1rem;
+        font-size: 0.8rem;
+        justify-content: center;
+    }
+}
+
+/* --- Micro Devices (≤245px) --- */
+@media (max-width: 245px) {
+    .twin-dashboard {
+        padding: 5rem 0.5rem 2rem 0.5rem;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        width: 100%;
+        margin: 0 auto;
+        padding: 0;
+    }
+
+    .widget {
+        padding: 0.9rem;
+        border-radius: 10px;
+        text-align: center;
+    }
+
+    .widget-title {
+        font-size: 0.9rem;
+    }
+
+    .actions {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .action-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 0.6rem;
+    }
+}

@@ -200,30 +200,32 @@
 }
 
 /* --- Responsive Simplified Mobile Design (Refined) --- */
+/* --- Enhanced Mobile Responsiveness (Compact Auth UI) --- */
 @media (max-width: 900px) {
     .auth-wrapper {
         display: flex;
         justify-content: center;
         align-items: flex-start;
-        padding: 2rem 1rem;
+        padding: 1.5rem 1rem;
+        height: auto;
+        min-height: 100vh;
+        overflow-y: auto;
+        background: linear-gradient(135deg, #0c0c20, #090919);
     }
 
     .auth-container {
-        position: relative;
         width: 100%;
-        max-width: 420px;
-        /* Keeps the card nicely narrow */
+        max-width: 400px;
         height: auto;
-        min-height: auto;
-        border-radius: 20px;
-        padding: 2rem 1.5rem;
+        padding: 1.5rem 1rem;
+        border-radius: 16px;
         background: rgba(255, 255, 255, 0.06);
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
-        backdrop-filter: blur(15px);
-        overflow: visible;
+        backdrop-filter: blur(14px);
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5);
         display: flex;
         flex-direction: column;
         align-items: center;
+        overflow: visible;
     }
 
     .form-box {
@@ -233,15 +235,14 @@
         opacity: 1 !important;
         transform: none !important;
         padding: 0;
-        transition: none;
     }
 
-    /* Hide panel on mobile */
+    /* Hide side panel on mobile */
     .hide-on-mobile {
         display: none !important;
     }
 
-    /* Only show one form at a time */
+    /* Only show the relevant form */
     .form-box.signup {
         display: none;
     }
@@ -254,72 +255,60 @@
         display: flex;
     }
 
-    /* Input tweaks for smaller screens */
+    /* Compact inputs and buttons */
     .input-group input {
-        font-size: 0.95rem;
-        padding: 0.7rem 0.9rem;
+        font-size: 0.9rem;
+        padding: 0.65rem 0.9rem;
         border-radius: 8px;
     }
 
-    /* Button and spacing */
     .auth-btn {
-        font-size: 1rem;
-        padding: 0.9rem;
-        border-radius: 10px;
-        width: 100%;
-    }
-
-    .toggle-text {
-        margin-top: 1.5rem;
         font-size: 0.95rem;
-        text-align: center;
+        padding: 0.8rem;
+        width: 100%;
+        border-radius: 8px;
     }
 
-    /* Typography scale down */
+    /* Text and heading tweaks */
     .form-box h2 {
-        font-size: 1.5rem;
+        font-size: 1.4rem;
         text-align: center;
+        margin-bottom: 0.5rem;
     }
 
     .subtitle {
         text-align: center;
-        font-size: 0.95rem;
-        color: #d8d4ff;
+        font-size: 0.9rem;
+        color: #dcd7ff;
+        margin-bottom: 1.2rem;
     }
 
-    /* Home icon positioning */
+    .toggle-text {
+        margin-top: 1.2rem;
+        font-size: 0.9rem;
+    }
+
+    /* Home icon spacing */
     .home-icon {
-        top: 20px;
-        left: 20px;
+        top: 15px;
+        left: 15px;
+        font-size: 1.1rem;
     }
 }
 
-/* --- Even smaller phones --- */
+/* --- Even smaller phones (≤480px) --- */
 @media (max-width: 480px) {
     .auth-container {
-        max-width: 360px;
-        padding: 1.5rem 1rem;
+        max-width: 340px;
+        padding: 1.2rem 0.9rem;
+        border-radius: 14px;
     }
 
     .form-box h2 {
-        font-size: 1.3rem;
+        font-size: 1.2rem;
     }
 
     .subtitle {
         font-size: 0.85rem;
-    }
-
-    .input-group input {
-        font-size: 0.9rem;
-        padding: 0.65rem 0.8rem;
-    }
-
-    .auth-btn {
-        padding: 0.8rem;
-        font-size: 0.95rem;
-    }
-
-    .toggle-text {
-        font-size: 0.9rem;
     }
 }

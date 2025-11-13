@@ -55,9 +55,20 @@ const NavBar = ({ brandName, imageSrcPath, navItems }: NavBarProps) => {
               </li>
             );
           })}
+
+          {/* Mobile Login/Signup Button */}
+          <li className="mobile-login-wrapper">
+            <Link
+              to="/auth"
+              className="mobile-login-btn"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Login / Signup
+            </Link>
+          </li>
         </ul>
 
-        {/* Login Button */}
+        {/* Desktop Login Button */}
         <Link to="/auth" className="login-btn">
           Login / Signup
         </Link>

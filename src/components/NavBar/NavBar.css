@@ -235,3 +235,132 @@
 .menu-open {
     box-shadow: 0 0 30px rgba(130, 70, 255, 0.5);
 }
+
+
+/* --- Mobile Login Button --- */
+.mobile-login-wrapper {
+    display: none;
+}
+
+.mobile-login-btn {
+    background: linear-gradient(90deg, #7a5cff, #c09eff);
+    color: #fff;
+    padding: 0.6rem 1.6rem;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    margin-top: 0.8rem;
+    box-shadow: 0 0 12px rgba(140, 90, 255, 0.4);
+    transition: all 0.3s ease;
+}
+
+.mobile-login-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 18px rgba(160, 110, 255, 0.7);
+}
+
+/* Only show mobile button when menu is open on small screens */
+@media (max-width: 900px) {
+    .mobile-login-wrapper {
+        display: block;
+        text-align: center;
+    }
+
+    /* Hide desktop login button */
+    .login-btn {
+        display: none;
+    }
+}
+/* Mobile Menu Scroll Fix */
+@media (max-width: 768px) {
+    .nav-links {
+        max-height: 80vh;
+        /* prevent it from covering entire screen */
+        overflow-y: auto;
+        /* allow scrolling within the menu */
+        -webkit-overflow-scrolling: touch;
+        /* smooth scroll on iOS */
+        padding-bottom: 1rem;
+    }
+         .navbar-modern {
+             padding: 0.8rem 1.2rem;
+             min-height: 60px;
+         }
+    
+         .navbar-container {
+             gap: 0.5rem;
+         }
+    
+         .navbar-brand-modern img.brand-logo {
+             width: 30px;
+             height: 30px;
+         }
+    
+         .brand-text {
+             font-size: 1rem;
+         }
+    
+         .login-btn {
+             font-size: 0.85rem;
+             padding: 0.4rem 0.8rem;
+         }
+    
+         .menu-toggle {
+             transform: scale(0.85);
+         }
+
+    /* Optional: smaller font & spacing for compact layout */
+    .nav-links li {
+        margin: 0.6rem 0;
+    }
+
+    .nav-link-modern {
+        font-size: 0.95rem;
+    }
+
+    /* Slightly reduce padding of container to fit more items */
+    .navbar-container {
+        padding: 0.8rem 1rem;
+    }
+}
+
+/* --- Mobile Navbar Optimization --- */
+
+
+/* For extra small devices (phones ≤ 425px) */
+@media (max-width: 425px) {
+    .navbar-modern {
+        padding: 0.6rem 1rem;
+        min-height: 52px;
+    }
+
+    .navbar-brand-modern img.brand-logo {
+        width: 26px;
+        height: 26px;
+    }
+
+    .brand-text {
+        font-size: 0.9rem;
+    }
+
+    .login-btn {
+        display: none;
+        /* Optional: hide login for extra compact nav */
+    }
+}
+
+/* For micro screens ≤ 320px */
+@media (max-width: 320px) {
+    .navbar-modern {
+        padding: 0.5rem 0.8rem;
+        min-height: 45px;
+    }
+
+    .brand-text {
+        font-size: 0.8rem;
+    }
+
+    .menu-toggle span {
+        height: 2px;
+    }
+}
