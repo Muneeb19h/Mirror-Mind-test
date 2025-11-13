@@ -1,0 +1,32 @@
+.emotion-visualizer {
+    width: 100%;
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 20px;
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(150, 100, 255, 0.15);
+    box-shadow: 0 0 20px rgba(120, 70, 255, 0.15);
+    animation: fadeIn 0.8s ease;
+}
+
+.emotion-title {
+    text-align: center;
+    color: #bfaaff;
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+    font-weight: 500;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

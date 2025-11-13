@@ -1,0 +1,105 @@
+.ai-reflections-page {
+    min-height: 100vh;
+    background: radial-gradient(ellipse at center, #090618 60%, #050312 100%);
+    color: #e4e4ff;
+    padding: 3rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.page-title {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    color: #bfaaff;
+}
+
+.reflection-feed {
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 20px;
+    padding: 2rem;
+    max-width: 900px;
+    width: 100%;
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(150, 100, 255, 0.15);
+    box-shadow: 0 0 20px rgba(120, 70, 255, 0.15);
+    overflow-y: auto;
+    max-height: 300px;
+}
+
+.reflection-item {
+    padding: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    transition: background 0.3s;
+}
+
+.reflection-item:hover {
+    background: rgba(150, 100, 255, 0.1);
+}
+
+.reflection-input-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2rem;
+    width: 100%;
+    max-width: 600px;
+}
+
+.reflection-input-box textarea {
+    width: 100%;
+    height: 120px;
+    border-radius: 12px;
+    border: none;
+    padding: 1rem;
+    font-size: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    color: #e4e4ff;
+    resize: none;
+    outline: none;
+}
+
+.reflection-input-box button {
+    background: linear-gradient(90deg, #7a5eff, #a488ff);
+    color: #fff;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.reflection-input-box button:hover {
+    box-shadow: 0 0 15px rgba(140, 90, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.ai-response-box {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 1.5rem;
+    max-width: 700px;
+    margin-top: 2rem;
+    border: 1px solid rgba(150, 100, 255, 0.1);
+    box-shadow: 0 0 15px rgba(150, 100, 255, 0.2);
+    animation: fadeIn 0.8s ease;
+}
+
+.response-text {
+    color: #c7bbff;
+    font-style: italic;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

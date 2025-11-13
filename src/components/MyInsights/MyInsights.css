@@ -1,0 +1,149 @@
+.insights-page {
+    min-height: 100vh;
+    background: radial-gradient(ellipse at center, #090618 60%, #050312 100%);
+    color: #e4e4ff;
+    padding: 3rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: fadeIn 0.8s ease forwards;
+}
+
+.page-title {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #bfaaff;
+    margin-bottom: 2rem;
+    text-shadow: 0 0 10px rgba(160, 130, 255, 0.4);
+}
+
+/* --- Stats Section --- */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 1000px;
+    margin-bottom: 3rem;
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+    border: 1px solid rgba(150, 100, 255, 0.15);
+    backdrop-filter: blur(15px);
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 20px rgba(150, 100, 255, 0.25);
+}
+
+.progress-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 0.8rem 0;
+}
+
+.fill {
+    height: 100%;
+    background: linear-gradient(90deg, #7a5eff, #9f7bff);
+}
+
+/* --- Insight Feed --- */
+.insight-feed {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 2rem;
+    width: 100%;
+    max-width: 900px;
+    margin-bottom: 2.5rem;
+}
+
+.insight-feed h2 {
+    margin-bottom: 1rem;
+    color: #bfaaff;
+}
+
+.insight-feed ul {
+    list-style: none;
+    padding: 0;
+}
+
+.insight-feed li {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: background 0.3s ease;
+}
+
+.insight-feed li:hover {
+    background: rgba(150, 100, 255, 0.1);
+}
+
+/* --- Recommendations --- */
+.recommendations {
+    text-align: center;
+    width: 100%;
+    max-width: 900px;
+}
+
+.suggestions-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.suggestion-card {
+    background: linear-gradient(135deg, #7a5eff, #9f7bff);
+    color: #fff;
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.suggestion-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 15px rgba(150, 100, 255, 0.3);.chart-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 950px;
+            margin-bottom: 3rem;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(150, 100, 255, 0.15);
+            box-shadow: 0 0 20px rgba(120, 70, 255, 0.15);
+        }
+    
+        .chart-section h2 {
+            color: #bfaaff;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+    
+        .chart-container {
+            width: 100%;
+            height: 300px;
+        }
+}
+
+/* --- Animation --- */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
