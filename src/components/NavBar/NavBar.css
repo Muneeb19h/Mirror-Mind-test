@@ -261,6 +261,66 @@
 
 /* Only show mobile button when menu is open on small screens */
 @media (max-width: 900px) {
+    /* --- START NEW MOBILE DROPDOWN FIX (Inside @media (max-width: 900px)) --- */
+    
+        /* 1. Fix the User Button (Make it look like a link) */
+        .user-dropdown-wrapper.mobile {
+            width: 100%;
+            /* Ensure it takes full width of the li item */
+            margin-top: 10px;
+            /* Separator from the link above */
+            display: block;
+        }
+    
+        .user-dropdown-wrapper.mobile .mobile-login-btn {
+            
+            width: 100%;
+            background: none;
+            box-shadow: none;
+            border: none;
+            color: #bfbfff;
+            
+            padding: 0.8rem 0;
+            
+            justify-content: center;
+            
+            font-size: 1.05rem;
+            
+            border-radius: 0;
+        }
+    
+        .user-dropdown-menu.mobile {
+            position: static !important;
+    
+            /* Cancel Box/Floating Look */
+            background: transparent !important;
+            box-shadow: none !important;
+            border: none !important;
+    
+            /* Ensure Layout is Full Width */
+            width: 100%;
+            min-width: unset;
+            padding: 0;
+            margin: 0;
+            border-radius: 0;
+        }
+    
+        /* 3. Fix Menu Items (Dashboard, Logout) */
+        .user-dropdown-menu.mobile .dropdown-item {
+            /* Indent slightly and ensure center alignment */
+            padding: 8px 0;
+            text-align: center;
+            font-size: 0.95rem;
+            margin: 0.3rem 0;
+        }
+    
+        .user-dropdown-menu.mobile .logout-item {
+            border-top: none;
+        }
+
+    .user-dropdown-wrapper.desktop {
+        display: none !important;
+    }
     .mobile-login-wrapper {
         display: block;
         text-align: center;
