@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
 import "./NavBar.css";
 
 interface NavBarProps {
@@ -11,8 +12,111 @@ interface NavBarProps {
 const NavBar = ({ brandName, imageSrcPath, navItems }: NavBarProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const [userName, setUserName] = useState<string | null>(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  // Function to check login status
+  const checkLoginStatus = () => {
+    const token = localStorage.getItem("authToken");
+    const storedUsername = localStorage.getItem("username");
+
+    if (token && storedUsername) {
+      // Set the default Authorization header for ALL future API calls (for protected routes)
+      axios.defaults.headers.common["Authorization"] = `Token ${token}`;
+      setUserName(storedUsername);
+    } else {
+      // User is logged out
+      delete axios.defaults.headers.common["Authorization"];
+      setUserName(null);
+    }
+  };
+
+  // Function to handle logout
+  const handleLogout = () => {
+    // 1. Remove the token and username from storage
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("username");
+    setUserName(null);
+    delete axios.defaults.headers.common["Authorization"];
+    setIsMenuOpen(false);
+    navigate("/");
+  };
+  useEffect(() => {
+    checkLoginStatus();
+  }, [location.pathname]);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+  // Inside NavBar component (AuthButton definition)
+  const AuthButton = ({ isMobile = false }) => (
+    <>
+      {userName ? (
+        // Logged In View: Dropdown Menu
+        <div
+          className={`user-dropdown-wrapper ${isMobile ? "mobile" : "desktop"}`}
+          // Toggle the dropdown state on click
+          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+        >
+          {/* Username Button (always visible) */}
+          <button className={isMobile ? "mobile-login-btn" : "login-btn"}>
+            {userName}
+            <span
+              style={{
+                marginLeft: "8px",
+                transition: "transform 0.2s",
+                transform: isDropdownOpen ? "rotate(180deg)" : "rotate(0deg)",
+              }}
+            >
+              &#9660;
+            </span>
+          </button>
+
+          {/* Dropdown Menu (Conditionally Rendered) */}
+          {isDropdownOpen && (
+            <div
+              className={`user-dropdown-menu ${
+                isMobile ? "mobile" : "desktop"
+              }`}
+            >
+              {/* 1. Dashboard Link */}
+              <Link
+                to="/twin-dashboard"
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent dropdown closing immediately
+                  setIsDropdownOpen(false);
+                }}
+                className="dropdown-item"
+              >
+                Dashboard
+              </Link>
+
+              {/* 2. Logout Action */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent dropdown closing immediately
+                  handleLogout(); // Calls the function to clear storage and redirect
+                  setIsDropdownOpen(false);
+                }}
+                className="dropdown-item logout-item"
+              >
+                Logout
+              </button>
+            </div>
+          )}
+        </div>
+      ) : (
+        // Logged Out View: Show Login/Signup button
+        <Link
+          to="/auth"
+          className={isMobile ? "mobile-login-btn" : "login-btn"}
+          onClick={() => setIsMenuOpen(false)}
+        >
+          Login / Signup
+        </Link>
+      )}
+    </>
+  );
 
   return (
     <nav className={`navbar-modern ${isMenuOpen ? "menu-open" : ""}`}>
@@ -56,22 +160,14 @@ const NavBar = ({ brandName, imageSrcPath, navItems }: NavBarProps) => {
             );
           })}
 
-          {/* Mobile Login/Signup Button */}
+          {/* Mobile Login/Signup Button (Now dynamic) */}
           <li className="mobile-login-wrapper">
-            <Link
-              to="/auth"
-              className="mobile-login-btn"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Login / Signup
-            </Link>
+            <AuthButton isMobile={true} />
           </li>
         </ul>
 
-        {/* Desktop Login Button */}
-        <Link to="/auth" className="login-btn">
-          Login / Signup
-        </Link>
+        {/* Desktop Login Button (Now dynamic) */}
+        <AuthButton isMobile={false} />
       </div>
     </nav>
   );

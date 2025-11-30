@@ -214,6 +214,7 @@
     }
 
     .auth-container {
+        margin-top: 100px;
         width: 100%;
         max-width: 400px;
         height: auto;
@@ -299,6 +300,7 @@
 /* --- Even smaller phones (≤480px) --- */
 @media (max-width: 480px) {
     .auth-container {
+        margin-top: 100px;
         max-width: 340px;
         padding: 1.2rem 0.9rem;
         border-radius: 14px;
