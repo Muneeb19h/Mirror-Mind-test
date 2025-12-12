@@ -18,12 +18,13 @@ const NavBar = ({ brandName, imageSrcPath, navItems }: NavBarProps) => {
 
   // Function to check login status
   const checkLoginStatus = () => {
-    const token = localStorage.getItem("authToken");
+    // UPDATED: Check for accessToken (JWT)
+    const token = localStorage.getItem("accessToken");
     const storedUsername = localStorage.getItem("username");
 
     if (token && storedUsername) {
-      // Set the default Authorization header for ALL future API calls (for protected routes)
-      axios.defaults.headers.common["Authorization"] = `Token ${token}`;
+      // UPDATED: Use 'Bearer' prefix for JWT
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       setUserName(storedUsername);
     } else {
       // User is logged out
@@ -34,9 +35,11 @@ const NavBar = ({ brandName, imageSrcPath, navItems }: NavBarProps) => {
 
   // Function to handle logout
   const handleLogout = () => {
-    // 1. Remove the token and username from storage
-    localStorage.removeItem("authToken");
+    // 1. Remove both JWT tokens and username from storage
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken"); // Ensure refresh token is also cleared
     localStorage.removeItem("username");
+
     setUserName(null);
     delete axios.defaults.headers.common["Authorization"];
     setIsMenuOpen(false);
