@@ -12,34 +12,117 @@ type AuthPhase = "login" | "signup" | "verify_otp";
 // Define the source phase (used to determine redirection after successful verification)
 type LastPhase = "signup" | "login" | null;
 
+// New state type for frontend validation errors
+type FormErrors = {
+  email: string;
+  password: string;
+  fullName: string;
+};
+
 const Auth = () => {
-  // Use 'phase' to manage the currently displayed form
   const [phase, setPhase] = useState<AuthPhase>("login");
   const navigate = useNavigate();
 
-  // New state to track if the user came from 'signup' or 'login'
   const [lastPhase, setLastPhase] = useState<LastPhase>(null);
 
-  // State to hold all form input data
   const [formData, setFormData] = useState({
     email: "",
     password: "",
     fullName: "", // Only used for signup
   });
 
-  const [otpCode, setOtpCode] = useState(""); // New state for OTP input
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  // NEW STATE: State to hold front-end validation errors
+  const [formErrors, setFormErrors] = useState<FormErrors>({
+    email: "",
+    password: "",
+    fullName: "",
+  });
 
-  // The email that needs verification (stored after successful API call)
+  const [otpCode, setOtpCode] = useState("");
+  const [error, setError] = useState(""); // Backend/API errors
+  const [loading, setLoading] = useState(false);
   const [verificationEmail, setVerificationEmail] = useState("");
 
-  // Universal handler for all input fields (signup/login)
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  // --- 1. VALIDATION LOGIC FUNCTIONS ---
+
+  const validateEmail = (email: string) => {
+    if (!email) return "Email is required.";
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return "Please enter a valid email (e.g., abc@example.com).";
+    }
+    return "";
   };
 
-  // Handler for OTP code input
+  const validatePassword = (password: string) => {
+    if (!password) return "Password is required.";
+    if (password.length < 8) {
+      return "Password must be at least 8 characters long.";
+    }
+    // Strong password suggestions
+    if (!/[A-Z]/.test(password)) {
+      return "Must contain at least one uppercase letter.";
+    }
+    if (!/[0-9]/.test(password)) {
+      return "Must contain at least one number.";
+    }
+    if (!/[!@#$%^&*()]/.test(password)) {
+      return "Must contain at least one special character (!@#...).";
+    }
+    return "";
+  };
+
+  const validateFullName = (fullName: string) => {
+    // Only required during the signup phase
+    if (phase === "signup" && !fullName) {
+      return "Full Name is required for signup.";
+    }
+    return "";
+  };
+
+  // Helper to check if any field has a current validation error
+  const hasFrontendErrors = () => {
+    // Check required fields based on current phase
+    const fieldsToCheck =
+      phase === "signup"
+        ? ["email", "password", "fullName"]
+        : ["email", "password"];
+
+    // Check if any error message exists or if required fields are empty
+    return fieldsToCheck.some(
+      (field) =>
+        formErrors[field as keyof FormErrors] !== "" ||
+        !formData[field as keyof FormErrors]
+    );
+  };
+
+  // --- 2. UNIVERSAL INPUT HANDLER (with Validation) ---
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    // 1. Update form data
+    setFormData({ ...formData, [name]: value });
+
+    // 2. Run validation based on field name
+    let errorMessage = "";
+    if (name === "email") {
+      errorMessage = validateEmail(value);
+    } else if (name === "password") {
+      errorMessage = validatePassword(value);
+    } else if (name === "fullName") {
+      errorMessage = validateFullName(value);
+    }
+
+    // 3. Update form errors state immediately
+    setFormErrors((prev) => ({ ...prev, [name]: errorMessage }));
+
+    // 4. Clear generic backend errors when the user starts typing again
+    if (error) {
+      setError("");
+    }
+  };
+
+  // Handler for OTP code input (remains the same)
   const handleOtpChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setOtpCode(e.target.value);
   };
@@ -47,18 +130,29 @@ const Auth = () => {
   // --- SWITCHING FORMS ---
   const toggleAuthMode = (newPhase: "login" | "signup") => {
     setPhase(newPhase);
-    setLastPhase(null); // Reset phase tracker
+    setLastPhase(null);
     setError("");
-    // IMPORTANT: Only clear if switching between login/signup.
-    // We rely on formData state persistence when switching to verify_otp
+    setFormErrors({ email: "", password: "", fullName: "" }); // Clear errors
     setFormData({ email: "", password: "", fullName: "" });
-    setOtpCode(""); // Clear OTP
-    setVerificationEmail(""); // Clear email for verification
+    setOtpCode("");
+    setVerificationEmail("");
   };
 
-  // --- 1. HANDLE SIGNUP (Send OTP) ---
+  // --- 3. HANDLE SIGNUP (Send OTP) ---
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // FRONTEND VALIDATION CHECK: Stop if errors exist
+    if (
+      hasFrontendErrors() ||
+      !formData.email ||
+      !formData.password ||
+      !formData.fullName
+    ) {
+      setError("Please fix the validation errors before submitting.");
+      return;
+    }
+
     setError("");
     setLoading(true);
 
@@ -68,15 +162,14 @@ const Auth = () => {
       email: formData.email,
       password: formData.password,
       full_name: formData.fullName,
-      username: formData.fullName.replace(/\s+/g, "_"), // For Django
+      username: formData.fullName.replace(/\s+/g, "_"),
     };
 
     try {
       const response = await axios.post(url, payload);
 
-      // OTP sent successfully. Keep formData (including password) in state.
       setVerificationEmail(formData.email);
-      setLastPhase("signup"); // Mark the source as signup
+      setLastPhase("signup");
       setPhase("verify_otp");
 
       setError(
@@ -91,9 +184,16 @@ const Auth = () => {
     }
   };
 
-  // --- 2. HANDLE LOGIN ---
+  // --- 4. HANDLE LOGIN ---
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // FRONTEND VALIDATION CHECK: Stop if errors exist
+    if (hasFrontendErrors() || !formData.email || !formData.password) {
+      setError("Please fix the validation errors before submitting.");
+      return;
+    }
+
     setError("");
     setLoading(true);
 
@@ -110,43 +210,58 @@ const Auth = () => {
       // Standard Login Success (User is verified and logged in)
       localStorage.setItem("accessToken", response.data.access);
       localStorage.setItem("refreshToken", response.data.refresh);
-      // Use email as the username for display on the Navbar
-      localStorage.setItem("username", formData.email);
+      // NOTE: Assuming your backend now returns 'full_name' or a suitable display name in response.data
+      localStorage.setItem(
+        "username",
+        response.data.full_name || formData.email
+      );
 
-      // Redirect to dashboard
       navigate("/twin-dashboard");
     } catch (err: any) {
-      const errorMessage = err.response?.data?.detail;
+      // Extract the error data from the backend response
+      const errorData = err.response?.data;
+      const detail = errorData?.detail;
 
-      // CHECK 1: If the error suggests the user is UNVERIFIED, switch to OTP flow
-      if (errorMessage && errorMessage.includes("Account is not verified")) {
+      // 1. CHECK FOR OTP REQUIREMENT (Both 'OTP_REQUIRED' or 'Account is not verified')
+      if (
+        detail === "OTP_REQUIRED" ||
+        (typeof detail === "string" && detail.includes("not verified"))
+      ) {
         try {
-          url = API_BASE_URL + "auth/send-login-otp/";
-          const otpResponse = await axios.post(url, payload);
+          // Automatically trigger the OTP email
+          const otpUrl = API_BASE_URL + "auth/send-login-otp/";
+          const otpResponse = await axios.post(otpUrl, {
+            email: formData.email,
+            password: formData.password,
+          });
 
+          // Update UI state to move to OTP screen
           setVerificationEmail(formData.email);
-          setLastPhase("login"); // Mark the source as login
+          setLastPhase("login");
           setPhase("verify_otp");
+
           setError(
             otpResponse.data.detail ||
-              "Account requires verification. OTP sent to your email."
+              "Verification required. OTP sent to your email."
           );
         } catch (otpErr: any) {
           setError(
             otpErr.response?.data?.detail ||
-              "Login failed and OTP could not be sent."
+              "Credentials correct, but failed to send OTP."
           );
         }
-      } else {
-        // Standard login failure (e.g., wrong password, user not found)
-        setError(errorMessage || "Login failed. Check your credentials.");
+      }
+      // 2. CHECK FOR WRONG CREDENTIALS
+      else {
+        // This catches "Invalid email or password"
+        setError(detail || "Login failed. Please check your credentials.");
       }
     } finally {
       setLoading(false);
     }
   };
 
-  // --- 3. FINALIZED HANDLE OTP VERIFICATION ---
+  // --- 5. FINALIZED HANDLE OTP VERIFICATION (remains mostly same) ---
   const handleVerifyOTP = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -160,38 +275,28 @@ const Auth = () => {
     };
 
     try {
-      // ATTEMPT 1: Verify the OTP Code
       const response = await axios.post(verifyUrl, payload);
       const successMessage = response.data.detail || "Verification successful!";
 
       if (lastPhase === "signup") {
-        // --- AUTO-LOGIN FOR NEWLY VERIFIED USER ---
         setError(successMessage + " Logging you in...");
 
         try {
-          // 1. Prepare login payload (using preserved password in formData)
           const loginPayload = {
             email: verificationEmail,
             password: formData.password,
           };
 
-          // 2. Call the standard login endpoint to get the tokens (JWT)
           const loginUrl = API_BASE_URL + "auth/login/";
           const loginResponse = await axios.post(loginUrl, loginPayload);
 
-          // 3. Save tokens and username (Auto-Login Complete)
           localStorage.setItem("accessToken", loginResponse.data.access);
           localStorage.setItem("refreshToken", loginResponse.data.refresh);
-          // Use the full name (or email if full name is cleared)
-          localStorage.setItem(
-            "username",
-            formData.fullName || verificationEmail
-          );
+          // Use the full name collected during signup
+          localStorage.setItem("username", formData.fullName);
 
-          // 4. Redirect to dashboard
           navigate("/twin-dashboard");
         } catch (loginErr: any) {
-          // Failure during the auto-login step
           setError(
             "Verification successful! Auto-login failed. Please log in manually."
           );
@@ -200,18 +305,15 @@ const Auth = () => {
           setOtpCode("");
         }
       } else if (lastPhase === "login") {
-        // Returning user: Ask them to log in now that they are verified
         setError(successMessage + " You can now log in.");
         setPhase("login");
         setFormData({ email: verificationEmail, password: "", fullName: "" });
         setOtpCode("");
       } else {
-        // Fallback
         setError(successMessage + " Please log in.");
         setPhase("login");
       }
     } catch (err: any) {
-      // Failure during the initial OTP verification step
       const errorMessage =
         err.response?.data?.detail ||
         "Verification failed. Invalid or expired code.";
@@ -223,7 +325,7 @@ const Auth = () => {
 
   // Determine which handleSubmit function to use
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault(); // Prevent default form submission once
+    e.preventDefault();
     if (phase === "signup") {
       handleSignup(e);
     } else if (phase === "login") {
@@ -233,11 +335,10 @@ const Auth = () => {
     }
   };
 
-  // Dynamic CSS class for the container transition (for the signup panel animation)
   const containerClass =
     phase === "signup" ? "auth-container signup-mode" : "auth-container";
 
-  // --- RENDER OTP VERIFICATION FORM ---
+  // --- RENDER OTP VERIFICATION FORM (remains same) ---
   const renderOTPVerificationForm = () => (
     <div className="form-box verify">
       <h2>Verify Account</h2>
@@ -278,7 +379,7 @@ const Auth = () => {
     </div>
   );
 
-  // --- RENDER LOGIN FORM ---
+  // --- RENDER LOGIN FORM (Updated to display errors) ---
   const renderLoginForm = () => (
     <div className="form-box login">
       <h2>Welcome Back</h2>
@@ -293,6 +394,10 @@ const Auth = () => {
             onChange={handleInputChange}
             required
           />
+          {/* Display Error for Email */}
+          {formErrors.email && (
+            <p className="validation-error">{formErrors.email}</p>
+          )}
         </div>
         <div className="input-group">
           <input
@@ -303,6 +408,10 @@ const Auth = () => {
             onChange={handleInputChange}
             required
           />
+          {/* Display Error for Password */}
+          {formErrors.password && (
+            <p className="validation-error">{formErrors.password}</p>
+          )}
         </div>
         {error && (
           <p
@@ -314,7 +423,11 @@ const Auth = () => {
           </p>
         )}
 
-        <button type="submit" className="auth-btn" disabled={loading}>
+        <button
+          type="submit"
+          className="auth-btn"
+          disabled={loading || hasFrontendErrors()} // Disable if loading or errors exist
+        >
           {loading ? "Logging In..." : "Login"}
         </button>
       </form>
@@ -325,7 +438,7 @@ const Auth = () => {
     </div>
   );
 
-  // --- RENDER SIGNUP FORM ---
+  // --- RENDER SIGNUP FORM (Updated to display errors) ---
   const renderSignupForm = () => (
     <div className="form-box signup">
       <h2>Create Account</h2>
@@ -340,6 +453,10 @@ const Auth = () => {
             onChange={handleInputChange}
             required
           />
+          {/* Display Error for Full Name */}
+          {formErrors.fullName && (
+            <p className="validation-error">{formErrors.fullName}</p>
+          )}
         </div>
         <div className="input-group">
           <input
@@ -350,6 +467,10 @@ const Auth = () => {
             onChange={handleInputChange}
             required
           />
+          {/* Display Error for Email */}
+          {formErrors.email && (
+            <p className="validation-error">{formErrors.email}</p>
+          )}
         </div>
         <div className="input-group">
           <input
@@ -360,6 +481,10 @@ const Auth = () => {
             onChange={handleInputChange}
             required
           />
+          {/* Display Error for Password */}
+          {formErrors.password && (
+            <p className="validation-error">{formErrors.password}</p>
+          )}
         </div>
         {error && (
           <p
@@ -371,7 +496,11 @@ const Auth = () => {
           </p>
         )}
 
-        <button type="submit" className="auth-btn" disabled={loading}>
+        <button
+          type="submit"
+          className="auth-btn"
+          disabled={loading || hasFrontendErrors()} // Disable if loading or errors exist
+        >
           {loading ? "Sending OTP..." : "Sign Up"}
         </button>
       </form>
