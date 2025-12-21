@@ -304,8 +304,7 @@ const Auth = () => {
               </p>
             </div>
           )}
-
-          {/* SIGNUP FORM */}
+          g{/* SIGNUP FORM */}
           {phase === "signup" && (
             <div className="form-box signup">
               <h2>Create Account</h2>
@@ -419,7 +418,6 @@ const Auth = () => {
               </p>
             </div>
           )}
-
           {/* VERIFY OTP FORM (No validation needed for simple text) */}
           {phase === "verify_otp" && (
             <div className="form-box verify">
