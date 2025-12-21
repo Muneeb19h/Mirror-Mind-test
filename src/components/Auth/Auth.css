@@ -26,8 +26,8 @@
 
 .auth-container {
     position: relative;
-    width: 850px;
-    height: 520px;
+    width: 950px;
+    height: 700px;
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(25px);
     border-radius: 25px;
@@ -330,4 +330,40 @@
 /* Optional: To make the input field border red on error */
 .input-group input:has(+ .validation-error) {
     border-color: #ff4d4f;
+}
+.input-group {
+    position: relative;
+}
+
+.input-group input {
+    padding-right: 40px; /* Make room for the icon */
+}
+
+/* Container to hold the input and the eye icon */
+.password-field-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+/* Make space for the icon so text doesn't go under it */
+.password-field-wrapper input {
+    padding-right: 45px !important;
+}
+
+/* Position the eye icon */
+.password-toggle-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #bdb3f0;
+    display: flex;
+    align-items: center;
+    z-index: 5;
+    transition: color 0.2s;
+}
+
+.password-toggle-icon:hover {
+    color: #fff;
 }

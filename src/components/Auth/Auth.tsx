@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { House } from "react-bootstrap-icons";
+import { Eye, EyeSlash, House } from "react-bootstrap-icons";
 import axios from "axios";
 import "./Auth.css";
 
@@ -14,11 +14,12 @@ const Auth = () => {
   const [phase, setPhase] = useState<AuthPhase>("login");
   const [lastPhase, setLastPhase] = useState<LastPhase>(null);
   const navigate = useNavigate();
-
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
     fullName: "",
+    confirmPassword: "",
   });
   const [formErrors, setFormErrors] = useState<FormErrors>({
     email: "",
@@ -81,6 +82,9 @@ const Auth = () => {
 
   const hasFrontendErrors = () => {
     if (phase === "signup") {
+      const passwordsMatch = formData.password === formData.confirmPassword;
+      if (!passwordsMatch) return true; // You can also set an error message here
+
       return (
         !formData.email ||
         !formData.password ||
@@ -235,19 +239,34 @@ const Auth = () => {
                     <p className="validation-error">{formErrors.email}</p>
                   )}
                 </div>
+
                 <div className="input-group">
-                  <input
-                    name="password"
-                    type="password"
-                    placeholder="Password"
-                    value={formData.password}
-                    onChange={handleInputChange}
-                    required
-                  />
+                  {/* Wrap password in the new wrapper */}
+                  <div className="password-field-wrapper">
+                    <input
+                      name="password"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Password"
+                      value={formData.password}
+                      onChange={handleInputChange}
+                      required
+                    />
+                    <span
+                      className="password-toggle-icon"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? (
+                        <EyeSlash size={18} />
+                      ) : (
+                        <Eye size={18} />
+                      )}
+                    </span>
+                  </div>
                   {formErrors.password && (
                     <p className="validation-error">{formErrors.password}</p>
                   )}
                 </div>
+
                 {statusMsg && (
                   <p
                     className="status-text"
@@ -260,6 +279,7 @@ const Auth = () => {
                     {statusMsg}
                   </p>
                 )}
+
                 {error && (
                   <p
                     className="error-text"
@@ -272,10 +292,12 @@ const Auth = () => {
                     {error}
                   </p>
                 )}
+
                 <button type="submit" className="auth-btn" disabled={loading}>
                   {loading ? "Please wait..." : "Login"}
                 </button>
               </form>
+
               <p className="toggle-text">
                 New here?{" "}
                 <span onClick={() => setPhase("signup")}>Sign Up</span>
@@ -304,6 +326,7 @@ const Auth = () => {
                     <p className="validation-error">{formErrors.fullName}</p>
                   )}
                 </div>
+
                 <div className="input-group">
                   <input
                     name="email"
@@ -317,19 +340,50 @@ const Auth = () => {
                     <p className="validation-error">{formErrors.email}</p>
                   )}
                 </div>
+
                 <div className="input-group">
-                  <input
-                    name="password"
-                    type="password"
-                    placeholder="Password"
-                    value={formData.password}
-                    onChange={handleInputChange}
-                    required
-                  />
+                  <div className="password-field-wrapper">
+                    <input
+                      name="password"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Password"
+                      value={formData.password}
+                      onChange={handleInputChange}
+                      required
+                    />
+                    <span
+                      className="password-toggle-icon"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? (
+                        <EyeSlash size={18} />
+                      ) : (
+                        <Eye size={18} />
+                      )}
+                    </span>
+                  </div>
                   {formErrors.password && (
                     <p className="validation-error">{formErrors.password}</p>
                   )}
                 </div>
+
+                <div className="input-group">
+                  <input
+                    name="confirmPassword"
+                    type={showPassword ? "text" : "password"} // Also toggles with the same eye icon
+                    placeholder="Confirm Password"
+                    value={formData.confirmPassword}
+                    onChange={handleInputChange}
+                    required
+                  />
+                  {formData.confirmPassword &&
+                    formData.password !== formData.confirmPassword && (
+                      <p className="validation-error">
+                        Passwords do not match.
+                      </p>
+                    )}
+                </div>
+
                 {statusMsg && (
                   <p
                     className="status-text"
@@ -354,6 +408,7 @@ const Auth = () => {
                     {error}
                   </p>
                 )}
+
                 <button type="submit" className="auth-btn" disabled={loading}>
                   {loading ? "Processing..." : "Sign Up"}
                 </button>
