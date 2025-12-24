@@ -26,8 +26,8 @@
 
 .auth-container {
     position: relative;
-    width: 950px;
-    height: 700px;
+    width: 850px;
+    height: 620px;
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(25px);
     border-radius: 25px;

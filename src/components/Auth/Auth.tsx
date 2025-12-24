@@ -2,93 +2,71 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeSlash, House } from "react-bootstrap-icons";
 import axios from "axios";
+
+// Custom components and utils
+import { AuthInput } from "./AuthInput";
+import {
+  validateEmail,
+  validatePassword,
+  validateFullName,
+} from "../../utils/authUtils";
 import "./Auth.css";
 
 const API_BASE_URL = "http://127.0.0.1:8000/api/auth/";
 
-type AuthPhase = "login" | "signup" | "verify_otp";
-type LastPhase = "signup" | "login" | null;
-type FormErrors = { email: string; password: string; fullName: string };
-
 const Auth = () => {
-  const [phase, setPhase] = useState<AuthPhase>("login");
-  const [lastPhase, setLastPhase] = useState<LastPhase>(null);
   const navigate = useNavigate();
+
+  // --- UI & Flow States ---
+  const [phase, setPhase] = useState<"login" | "signup" | "verify_otp">(
+    "login"
+  );
+  const [lastPhase, setLastPhase] = useState<"signup" | "login" | null>(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [statusMsg, setStatusMsg] = useState("");
+  const [verificationEmail, setVerificationEmail] = useState("");
+  const [otpCode, setOtpCode] = useState("");
+
+  // --- Form States ---
   const [formData, setFormData] = useState({
     email: "",
     password: "",
     fullName: "",
     confirmPassword: "",
   });
-  const [formErrors, setFormErrors] = useState<FormErrors>({
+
+  const [formErrors, setFormErrors] = useState({
     email: "",
     password: "",
     fullName: "",
   });
-  const [otpCode, setOtpCode] = useState("");
-  const [error, setError] = useState("");
-  const [statusMsg, setStatusMsg] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [verificationEmail, setVerificationEmail] = useState("");
 
-  // --- VALIDATION LOGIC ---
-
-  const validateFullName = (name: string) => {
-    if (!name) return "Full name is required.";
-    if (name.length < 3) return "Name must be at least 3 characters.";
-    if (name.length > 25) return "Name cannot exceed 25 characters.";
-    // Optional: Ensures it's not just numbers/symbols
-    if (!/^[a-zA-Z\s]*$/.test(name)) return "Name can only contain letters.";
-    return "";
-  };
-  const validateEmail = (email: string) =>
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
-      ? ""
-      : "Enter valid email (example@gmail.com)";
-
-  const validatePassword = (pass: string) => {
-    const passwordRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/;
-
-    if (!pass) return "Password is required.";
-    if (pass.length < 8) return "Min 8 characters required.";
-    if (!/(?=.*[A-Z])/.test(pass))
-      return "At least one uppercase letter required.";
-    if (!/(?=.*[a-z])/.test(pass))
-      return "At least one lowercase letter required.";
-    if (!/(?=.*\d)/.test(pass)) return "At least one number required.";
-    if (!/(?=.*[@$!%*?&#])/.test(pass))
-      return "At least one special character required.";
-
-    return "";
-  };
-
+  // --- Input Handler ---
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prev) => ({ ...prev, [name]: value }));
 
-    // Real-time validation
+    // Dynamic Validation
     let msg = "";
     if (name === "email") msg = validateEmail(value);
     if (name === "password") msg = validatePassword(value);
     if (name === "fullName") msg = validateFullName(value);
 
     setFormErrors((prev) => ({ ...prev, [name]: msg }));
-
     if (error) setError("");
     if (statusMsg) setStatusMsg("");
   };
 
+  // --- Frontend Validation Check ---
   const hasFrontendErrors = () => {
     if (phase === "signup") {
-      const passwordsMatch = formData.password === formData.confirmPassword;
-      if (!passwordsMatch) return true; // You can also set an error message here
-
       return (
         !formData.email ||
         !formData.password ||
         !formData.fullName ||
+        formData.password !== formData.confirmPassword ||
         formErrors.email !== "" ||
         formErrors.password !== "" ||
         formErrors.fullName !== ""
@@ -102,7 +80,7 @@ const Auth = () => {
     );
   };
 
-  // --- ACTIONS ---
+  // --- API Actions ---
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -112,7 +90,9 @@ const Auth = () => {
     }
 
     setLoading(true);
-    setStatusMsg("Logging you in...");
+    setError(""); // Reset general error
+    setFormErrors((prev) => ({ ...prev, email: "" })); // Reset field error
+
     try {
       const res = await axios.post(`${API_BASE_URL}login/`, {
         email: formData.email,
@@ -123,7 +103,10 @@ const Auth = () => {
       localStorage.setItem("username", res.data.full_name || res.data.username);
       navigate("/twin-dashboard");
     } catch (err: any) {
-      if (err.response?.data?.detail === "OTP_REQUIRED") {
+      const serverMsg = err.response?.data?.detail;
+
+      if (serverMsg === "OTP_REQUIRED") {
+        // ... (existing OTP logic)
         setStatusMsg(`Sending code to ${formData.email}...`);
         await axios.post(`${API_BASE_URL}send-login-otp/`, {
           email: formData.email,
@@ -132,6 +115,17 @@ const Auth = () => {
         setVerificationEmail(formData.email);
         setLastPhase("login");
         setPhase("verify_otp");
+      }
+      // NEW: Check for "User not found" or "Email does not exist"
+      else if (
+        serverMsg &&
+        (serverMsg.toLowerCase().includes("user") ||
+          serverMsg.toLowerCase().includes("email"))
+      ) {
+        setFormErrors((prev) => ({
+          ...prev,
+          email: "This email is not registered.",
+        }));
       } else {
         setError("Invalid email or password.");
       }
@@ -140,7 +134,6 @@ const Auth = () => {
       setStatusMsg("");
     }
   };
-
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     if (hasFrontendErrors()) {
@@ -176,6 +169,7 @@ const Auth = () => {
         code: otpCode,
       });
 
+      // POINT 3: Auto-login logic after signup verification
       if (lastPhase === "signup") {
         setStatusMsg("Email verified! Signing you in now...");
         const res = await axios.post(`${API_BASE_URL}login/`, {
@@ -198,19 +192,29 @@ const Auth = () => {
       setLoading(false);
     }
   };
+
   const handleResendOTP = async () => {
     setLoading(true);
     try {
-      const res = await axios.post(`${API_BASE_URL}resend-otp/`, {
+      await axios.post(`${API_BASE_URL}resend-otp/`, {
         email: verificationEmail,
       });
-      setError("New code sent! Please check your inbox.");
+      setError("New code sent! Please check your inbox."); // Using error state to show msg per your original code
     } catch (err: any) {
       setError("Failed to resend code.");
     } finally {
       setLoading(false);
     }
   };
+
+  const PasswordToggle = (
+    <span
+      className="password-toggle-icon"
+      onClick={() => setShowPassword(!showPassword)}
+    >
+      {showPassword ? <EyeSlash size={18} /> : <Eye size={18} />}
+    </span>
+  );
 
   return (
     <div className="auth-wrapper">
@@ -220,52 +224,30 @@ const Auth = () => {
         className={`auth-container ${phase === "signup" ? "signup-mode" : ""}`}
       >
         <div className="auth-forms">
-          {/* LOGIN FORM */}
+          {/* 1st: LOGIN FORM */}
           {phase === "login" && (
             <div className="form-box login">
               <h2>Welcome Back</h2>
               <p className="subtitle">Log in to unlock your AI twin.</p>
               <form onSubmit={handleLogin}>
-                <div className="input-group">
-                  <input
-                    name="email"
-                    type="email"
-                    placeholder="Email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    required
-                  />
-                  {formErrors.email && (
-                    <p className="validation-error">{formErrors.email}</p>
-                  )}
-                </div>
-
-                <div className="input-group">
-                  {/* Wrap password in the new wrapper */}
-                  <div className="password-field-wrapper">
-                    <input
-                      name="password"
-                      type={showPassword ? "text" : "password"}
-                      placeholder="Password"
-                      value={formData.password}
-                      onChange={handleInputChange}
-                      required
-                    />
-                    <span
-                      className="password-toggle-icon"
-                      onClick={() => setShowPassword(!showPassword)}
-                    >
-                      {showPassword ? (
-                        <EyeSlash size={18} />
-                      ) : (
-                        <Eye size={18} />
-                      )}
-                    </span>
-                  </div>
-                  {formErrors.password && (
-                    <p className="validation-error">{formErrors.password}</p>
-                  )}
-                </div>
+                <AuthInput
+                  name="email"
+                  type="email"
+                  placeholder="Email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  error={formErrors.email}
+                />
+                <AuthInput
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  error={formErrors.password}
+                >
+                  {PasswordToggle}
+                </AuthInput>
 
                 {statusMsg && (
                   <p
@@ -279,7 +261,6 @@ const Auth = () => {
                     {statusMsg}
                   </p>
                 )}
-
                 {error && (
                   <p
                     className="error-text"
@@ -297,14 +278,14 @@ const Auth = () => {
                   {loading ? "Please wait..." : "Login"}
                 </button>
               </form>
-
               <p className="toggle-text">
                 New here?{" "}
                 <span onClick={() => setPhase("signup")}>Sign Up</span>
               </p>
             </div>
           )}
-          g{/* SIGNUP FORM */}
+
+          {/* 1st: SIGNUP FORM */}
           {phase === "signup" && (
             <div className="form-box signup">
               <h2>Create Account</h2>
@@ -312,76 +293,45 @@ const Auth = () => {
                 Join MirrorMind to unlock your AI twin.
               </p>
               <form onSubmit={handleSignup}>
-                <div className="input-group">
-                  <input
-                    name="fullName"
-                    type="text"
-                    placeholder="Full Name"
-                    value={formData.fullName}
-                    onChange={handleInputChange}
-                    required
-                  />
-                  {formErrors.fullName && (
-                    <p className="validation-error">{formErrors.fullName}</p>
-                  )}
-                </div>
-
-                <div className="input-group">
-                  <input
-                    name="email"
-                    type="email"
-                    placeholder="Email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    required
-                  />
-                  {formErrors.email && (
-                    <p className="validation-error">{formErrors.email}</p>
-                  )}
-                </div>
-
-                <div className="input-group">
-                  <div className="password-field-wrapper">
-                    <input
-                      name="password"
-                      type={showPassword ? "text" : "password"}
-                      placeholder="Password"
-                      value={formData.password}
-                      onChange={handleInputChange}
-                      required
-                    />
-                    <span
-                      className="password-toggle-icon"
-                      onClick={() => setShowPassword(!showPassword)}
-                    >
-                      {showPassword ? (
-                        <EyeSlash size={18} />
-                      ) : (
-                        <Eye size={18} />
-                      )}
-                    </span>
-                  </div>
-                  {formErrors.password && (
-                    <p className="validation-error">{formErrors.password}</p>
-                  )}
-                </div>
-
-                <div className="input-group">
-                  <input
-                    name="confirmPassword"
-                    type={showPassword ? "text" : "password"} // Also toggles with the same eye icon
-                    placeholder="Confirm Password"
-                    value={formData.confirmPassword}
-                    onChange={handleInputChange}
-                    required
-                  />
-                  {formData.confirmPassword &&
-                    formData.password !== formData.confirmPassword && (
-                      <p className="validation-error">
-                        Passwords do not match.
-                      </p>
-                    )}
-                </div>
+                <AuthInput
+                  name="fullName"
+                  type="text"
+                  placeholder="Full Name"
+                  value={formData.fullName}
+                  onChange={handleInputChange}
+                  error={formErrors.fullName}
+                />
+                <AuthInput
+                  name="email"
+                  type="email"
+                  placeholder="Email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  error={formErrors.email}
+                />
+                <AuthInput
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  error={formErrors.password}
+                >
+                  {PasswordToggle}
+                </AuthInput>
+                <AuthInput
+                  name="confirmPassword"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Confirm Password"
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange}
+                  error={
+                    formData.confirmPassword &&
+                    formData.password !== formData.confirmPassword
+                      ? "Passwords do not match."
+                      : ""
+                  }
+                />
 
                 {statusMsg && (
                   <p
@@ -418,7 +368,8 @@ const Auth = () => {
               </p>
             </div>
           )}
-          {/* VERIFY OTP FORM (No validation needed for simple text) */}
+
+          {/* 2nd & 3rd: VERIFICATION PANEL + RESEND OTP */}
           {phase === "verify_otp" && (
             <div className="form-box verify">
               <h2>Verify Account</h2>
@@ -426,16 +377,14 @@ const Auth = () => {
                 Code sent to <strong>{verificationEmail}</strong>
               </p>
               <form onSubmit={handleVerifyOTP}>
-                <div className="input-group">
-                  <input
-                    type="text"
-                    placeholder="6-digit code"
-                    value={otpCode}
-                    onChange={(e) => setOtpCode(e.target.value)}
-                    maxLength={6}
-                    required
-                  />
-                </div>
+                <AuthInput
+                  name="otp"
+                  type="text"
+                  placeholder="6-digit code"
+                  value={otpCode}
+                  onChange={(e) => setOtpCode(e.target.value)}
+                />
+
                 {statusMsg && (
                   <p
                     className="status-text"
@@ -452,17 +401,22 @@ const Auth = () => {
                     {error}
                   </p>
                 )}
+
                 <button type="submit" className="auth-btn" disabled={loading}>
                   Verify & Activate
                 </button>
               </form>
               <p className="toggle-text mt-3">
-                Didn't get it? <span onClick={handleResendOTP}>Resend OTP</span>
+                Didn't get it?{" "}
+                <span onClick={handleResendOTP} style={{ cursor: "pointer" }}>
+                  Resend OTP
+                </span>
               </p>
             </div>
           )}
         </div>
 
+        {/* Side Panel for Desktop */}
         <div className="auth-panel hide-on-mobile">
           <div className="panel-content">
             <h3>{phase === "login" ? "New here?" : "Already a member?"}</h3>
