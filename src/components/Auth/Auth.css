@@ -26,8 +26,8 @@
 
 .auth-container {
     position: relative;
-    width: 850px;
-    height: 620px;
+    width: 950px;
+    height: 700px;
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(25px);
     border-radius: 25px;
@@ -331,12 +331,14 @@
 .input-group input:has(+ .validation-error) {
     border-color: #ff4d4f;
 }
+
 .input-group {
     position: relative;
 }
 
 .input-group input {
-    padding-right: 40px; /* Make room for the icon */
+    padding-right: 40px;
+    /* Make room for the icon */
 }
 
 /* Container to hold the input and the eye icon */
@@ -366,4 +368,30 @@
 
 .password-toggle-icon:hover {
     color: #fff;
+}
+.auth-utils {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    font-size: 0.85rem;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #ccc;
+    cursor: pointer;
+}
+
+.forgot-link {
+    color: #a78bfa;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.forgot-link:hover {
+    text-decoration: underline;
+    color: #c4b5fd;
 }
