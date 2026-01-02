@@ -1,4 +1,6 @@
 // utils/authUtils.ts
+export const API_BASE_URL = "http://127.0.0.1:8000/api/auth/";
+
 export const validateEmail = (email: string) =>
   /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? "" : "Enter valid email (example@gmail.com)";
 
